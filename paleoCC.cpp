@@ -1,75 +1,11 @@
-/*
-12/11/09
--Added switches for weathering, marine OC, and biosphere feedbacks
--Made CO2 fertilization a saturating feedback
-
-12/8/09
--Returned to perscribed warming to reduce instability
--Added Q10 for marine organic carbon burial in "warm" function
-
-11-10-09
--Tweaked injection function
--Modified biosphere respiration feedback to be Q10 function of temperature
--Modified warm to follow CO2 sensitivity factor
-
-10-17-09
--Fixed "rivorg" accounting - C was being added to atmosphere while isotopes
-were going into the surface ocean.
--Adjusted "calburial" to reflect actual net burial of calcite and was able to
-confirm steady-state mass balance within 0.02% and balance of kerogen weathering
-and organic burial to within 2%.
--Version saved as GoodModern091017 has nice tuning for pCO2 of 350 ppmv.
--Need to work on re-tuning to high CO2 by changing silicate and carbonate
-weathering setpoints.
-
-10-15-09
--Found order-of-magnitude errors in atmco2 and biosphere.
--Retuned for higher silicate weathering flux (closer to original Walker values).
--Tried tuning for lower organic burial rates (ref modern marine C values of
-0.17% or 5.3 x 10^12 mol for ocean productivity of 3,000 x 10^12 mol/yr;
-10% of riverine POC export or 6.3 x 10^12 mol/yr; Schlunz and Schneider, 2000).
-Lower orgburial (0.5%) for marine C gives shallow lysocline (1.5km).
-Combining with lower river org burial (20%) gives nice case trending towards
-high pCO2 (~4x) and normal lysocline (~4 km).
--Tested 1 kyr injection of 3000 GT at -40 per mil, produces excellent
-2 km lysocline shoaling and 3 per mil excursion!!!!
-
-3-17-02
-Fixed dissolution flux rate problem.  Retuned for I/O ratio of 0.25.  Get
-much improved C/S ratios for sediments.
-
-2-27-2003
-Updated carbon cycle using numerical recepies 6th-order Runge-Kutta solver.
-In addition to cosmetic improvements, I fixed several problems in the 2001
-code.  These include: 1) sediment mass transfer is based on the appropriate
-equations for conservation of volume, 2) the ODEs for sediment parameters
-have been corrected, no forward-looking artifical stabilization is included,
-and 3) inaccuracies in the sedimentary carbon isotope equations have been
-corrected.  Other major changes include the addition of several functions
-for parameter calculations and the storage of basin geometry parameters in
-a global matrix.  A 3-step injection and single warming are included.
-
-6-2001
-Carbon and phosphorus cycle with lysocline and variable calcite burial.
-Dynamic production as a function of phosphorus concentration
-Riverine fluxes of carbon and P.  Includes output to file.
-Carbon isotopes.  Shelf area.  Weathering feedback and silicate weathering.
-Atmosphere-surface ocean mass exchange is mass independent.
-code for 15 x 5 seafloor sediment reservoirs...integrated sediments.
-*/
 #include "nr.h"
 #include <new.h>
-//#include <condefs>
 #include <iostream>
 #include <fstream>
 #include <math.h>
 #include <time.h>
 #pragma hdrstop
 //---------------Global Variables and Arrays---------------------------------
-//USEUNIT("rkqs.cpp");
-//USEUNIT("rkck.cpp");
-//USEUNIT("odeint.cpp");
-//---------------------------------------------------------------------------
 const int sfcells = 15;      //divide ocean basins into sfcells depth intervals
 const int sfdepths = 25;      //sfdepths reservoirs per depth interval
 const double sfthick = 0.5 / sfdepths;
