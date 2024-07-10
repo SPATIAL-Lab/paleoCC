@@ -301,7 +301,7 @@ void initial(Vec_IO_DP& y)
     }
 
     //calculate basin geometry
-    double ddepth = 6000 / sfcells;
+    double ddepth = 6000.0 / sfcells;
     double depth, uarea, barea, area;
     for (int i = 0; sfcells - i; i++) {
         sfres[i][0] = depth = double(i) * ddepth;
