@@ -43,7 +43,7 @@ double Q10 = 1.5;
 
 double cwz = 1.2e-5 / 1.75;          //1.2...1.05,1.5,1.2
 double swz = 0.60e-5 / 1.75;        //0.8...0.28,0.5,0.405,0.36,0.44,0.5,0.6
-double owz = 0.35e-5 / 1.75;      //0.5...0.24,0.3,0.4,0.5
+double owz = 2.882e-6;      //0.2e-5
 double pwz = 1.353e-5 / 1.25;    //1.8658...0.3,0.25,0.22,3.9,2.0,1.9,1.6,1.35
 double c13rivorg = -22.5;
 double c13rivcal = 2.6;
@@ -59,9 +59,10 @@ double dwtemp = 281.0;
 
 //options
 int inj = 1;
-int fb_bio = 1;
-int fb_oc = 0;
-int fb_weath = 0;
+int fb_bio = 1;  // assimilation rate
+int fb_oc = 1;  // respiration Q10
+int fb_fpoc = 0;  // fine particulate OM erosion rate
+int fb_ow = 1;  // kerogen weathering
 
 Vec_DP* xp_p;
 Mat_DP* yp_p;
@@ -379,21 +380,14 @@ void update(Vec_I_DP& y, const double time) //update dependant variables
     carbeq(dwtemp, y[2], y[4], dco3, dpco2);
     lysocline();
     production(y[5]);
-    etimesa = 50;
-    if (fb_weath)
-    {
-        rivcal = cwz * y[0];
-        rivsil = swz * pow(y[0], 0.3);
-        po4riv = pwz * pow(y[0], 0.3);
-        rivorg = owz * pow(y[0], 0.3);
-    }
-    else
-    {
-        rivcal = cwz * initCO2;
-        rivsil = swz * pow(initCO2, 0.3);
-        po4riv = pwz * pow(initCO2, 0.3);
-        rivorg = owz * pow(initCO2, 0.3);
-    }
+    etimesa = 10; 
+
+    rivcal = cwz * y[0];
+    rivsil = swz * pow(y[0], 0.3);
+    po4riv = pwz * pow(y[0], 0.3);
+    if (fb_ow) rivorg = owz * hydro;  //scale to hydro
+    else rivorg = owz;
+
     alkriv = (2 * (rivcal + rivsil));
     sigcriv = rivcal;
     fractionation();
@@ -433,10 +427,15 @@ void injection(const double time)
         else if (time - ti < (duration + 1000.0) && ic != 3) inject = injrate *
             (duration + 1000.0 - (time - ti)) / 500.0;
     }
-
     else {
         inject = 0;
     }
+
+    if (time > 20000.0) {
+        if (time < 120000.0) hydro = 1.0 + 2.0 * (120000.0 - time) / 100000.0;
+        else hydro = 1.0;
+    }
+
 
 }
 //----------------------------------------------------------------------
@@ -447,7 +446,6 @@ void warm(const double time, const double pco2)
     swtemp = 290 + log(pco2 / initCO2) / log(2) * sens;
     dwtemp = 281 + log(pco2 / initCO2) / log(2) * sens;
                                                          
-
                                                          //Perscribed temperature change for surface and deep ocean
     /*
 
@@ -527,9 +525,12 @@ void biology(const double pco2, const double bioC)
 {
     if (fb_bio) assim = 0.014427 * exp(-inject * 2e4);      // Negative productivity feedback
     else assim = 0.014427;
-    if (fb_bio) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
+    if (fb_oc) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
     else resp = bioC * 0.0634;
-    fpoc = 8.5e-6 * hydro;
+
+    if (fb_fpoc) fpoc = 8.5e-6 * hydro;
+    else fpoc = 8.5e-6;
+
     cpoc = 6.9e-6 * pow(bioC / 0.1537, 1.1);
     doc = 1.76e-5 * pow(bioC / 0.1537, 1.1);
     eros = fpoc + cpoc + doc;
