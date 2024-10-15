@@ -399,7 +399,7 @@ void update(Vec_I_DP& y, const double time) //update dependant variables
 //---------------------------------------------------------------------------
 void injection(const double time)
 {
-    double duration = 10000.0;
+    double duration = 1000.0;
     double injrate = 0.3 / duration;
 
     if (ic == 0) {                       //first injection @ 20 ky
