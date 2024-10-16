@@ -58,11 +58,15 @@ double swtemp = 290.0;                 // initial temp in K
 double dwtemp = 281.0;
 
 //options
-int inj = 1;
-int fb_bio = 1;  // assimilation rate
-int fb_oc = 1;  // respiration Q10
-int fb_fpoc = 0;  // fine particulate OM erosion rate
-int fb_ow = 1;  // kerogen weathering
+int inj;
+int fb_bio;  // assimilation rate
+int fb_oc;  // respiration Q10
+int fb_fpoc;  // fine particulate OM erosion rate
+int fb_ow;  // kerogen weathering
+double duration;  // injection duration, kyr
+double injmass;  // total injection mass, 10^18 mol C
+double assfb;  // assimilation feedback strength
+string casename;  // for output directory
 
 Vec_DP* xp_p;
 Mat_DP* yp_p;
@@ -146,7 +150,9 @@ int main(int argc, char** argv)
     }
 
     //output C cycle timeseries
-    fout.open("exogenic.txt");
+    string exfile = "/exogenic.txt";
+    exfile = casename + exfile;
+    fout.open(exfile);
     fout << "Time\tPCO2\tSigCSurf\tSigCDeep\tAlkSurf\tAlkDeep"
         << "\tPO4Surf\tPO4Deep\td13CAtm\td13CSurf\t"
         << "d13CDeep\tBioC\td13CBio\tInject\tStemp\tDtemp\tExport\t"
@@ -163,10 +169,12 @@ int main(int argc, char** argv)
     fout.close();
 
     //output sedimentary C timeseries
-    char nfile[15] = "sediment00.txt";
+    string nfile = "/sediment00.txt";
+    nfile = casename + nfile;
+    size_t nflen = nfile.length();
     for (int j = 0; sfdepths - j; j++) {
-        nfile[8] = char(j / 10 + 48);
-        nfile[9] = char(j % 10 + 48);
+        nfile[nflen - 6] = char(j / 10 + 48);
+        nfile[nflen - 5] = char(j % 10 + 48);
         fout.open(nfile);
         fout << "Time\t";
         for (int i = 0; sfcells - i; i++)
@@ -176,7 +184,6 @@ int main(int argc, char** argv)
         for (int i = 0; sfcells - i; i++)
             fout << "c13" << (i + 1) << "\t";
         fout << "\n";
-        nfile[9] = char(j + 48);
         for (int i = 0; kount - i; i++) {
             fout << xp[i] << "\t";
             for (int k = 0; k - sfcells * 3; k++)
@@ -186,25 +193,23 @@ int main(int argc, char** argv)
         fout.close();
     }
 
-    //    cout << '\a';
     return 0;
 }
 //---------------------------------------------------------------------------
 void initial(Vec_IO_DP& y)
 {
-    /*     y[0] = 2.44;                 //atm pCO2
-        y[1] = 2.90;               //sigC s mol/m^3
-        y[2] = 3.06;                //sig C deep mol/m^3
-        y[3] = 3.048;                 //alk s mol/m^3
-        y[4] = 3.052;                //alk deep mol/m^3
-        y[5] = 0.367;                //po4 s mmol/m^3
-        y[6] = 1.78;                //po4 deep mmol/m^3
-        y[7] = -5.68;               //d13C atm
-        y[8] = 3.11;                //d13C surf
-        y[9] = 1.93;               //d13C deep
-        y[10] = 0.231;               //bio C
-        y[11] = -27.79;              //bio d13C
-    */
+    fin.open("config.txt");
+    fin >> inj;
+    fin >> fb_bio;  // assimilation rate
+    fin >> fb_oc;  // respiration Q10
+    fin >> fb_fpoc;  // fine particulate OM erosion rate
+    fin >> fb_ow;  // kerogen weathering
+    fin >> duration;
+    fin >> injmass;
+    fin >> assfb;
+    fin >> casename;
+    fin.close();
+
     initCO2 = y[0] = 3.38;                 //atm pCO2
     y[1] = 3.08;               //sigC s mol/m^3
     y[2] = 3.23;                //sig C deep mol/m^3
@@ -399,8 +404,7 @@ void update(Vec_I_DP& y, const double time) //update dependant variables
 //---------------------------------------------------------------------------
 void injection(const double time)
 {
-    double duration = 1000.0;
-    double injrate = 0.3 / duration;
+    double injrate = injmass / duration;
 
     if (ic == 0) {                       //first injection @ 20 ky
         if (time > 20000.0) {
@@ -409,23 +413,14 @@ void injection(const double time)
         }
     }
 
-    /*	if(ic > 0 && time - ti < 1000) inject = injrate;
+    //  Methane addition ramps linearly from 0 to injrate over 0.05 * duration years
 
-        if(ic == 1 || ic == 2){  //second & third inj follow by 10 ky
-            if(time - ti > 10000.0){
-                    ti = time;
-                    ic++;
-            }
-        }
-    */
-    //  Methane addition ramps linearly from 0 to injrate over 1000 ky
-
-    if (ic > 0 && time - ti < (duration + 1000.0))
+    if (ic > 0 && time - ti < (duration * 1.1))
     {
-        if (time - ti < 500.0)	inject = injrate * ((time - ti) / 500.0);
-        else if (time - ti < (duration + 500.0)) inject = injrate;
-        else if (time - ti < (duration + 1000.0) && ic != 3) inject = injrate *
-            (duration + 1000.0 - (time - ti)) / 500.0;
+        if (time - ti < duration * 0.05)	inject = injrate * (time - ti) / (duration * 0.05);
+        else if (time - ti < (duration * 1.05)) inject = injrate;
+        else if (time - ti < (duration * 1.1) && ic != 3) inject = injrate *
+            (duration * 1.1 - (time - ti)) / (duration * 0.05);
     }
     else {
         inject = 0;
@@ -435,8 +430,6 @@ void injection(const double time)
         if (time < 120000.0) hydro = 1.0 + 2.0 * (120000.0 - time) / 100000.0;
         else hydro = 1.0;
     }
-
-
 }
 //----------------------------------------------------------------------
 void warm(const double time, const double pco2)
@@ -523,7 +516,7 @@ void fractionation()
 //---------------------------------------------------------------------------
 void biology(const double pco2, const double bioC)
 {
-    if (fb_bio) assim = 0.014427 * exp(-inject * 2e4);      // Negative productivity feedback
+    if (fb_bio) assim = 0.014427 * exp(-inject * assfb);      // Negative productivity feedback
     else assim = 0.014427;
     if (fb_oc) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
     else resp = bioC * 0.0634;
