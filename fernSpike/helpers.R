@@ -37,7 +37,7 @@ sim = function(parms){
 }
 
 plot.case = function(case, base, casename){
-  fname = paste0("d13C_", casename, ".png")
+  fname = paste0(casename, "_d13C.png")
   png(file.path("fernSpike", "figs", fname), width = 6, height = 8, units = "in", res = 600)
   layout(matrix(1:3, nrow = 3))
   par(mar = c(5, 5, 1, 5))
@@ -60,7 +60,7 @@ plot.case = function(case, base, casename){
   mtext(expression(delta^{13}*"C"[deep]), 2, 3)
   dev.off()
   
-  fname = paste0("CC_", casename, ".png")
+  fname = paste0(casename, "_CC.png")
   png(file.path("fernSpike", "figs", fname), width = 6, height = 8, units = "in", res = 600)
   layout(matrix(1:3, nrow = 3))
   par(mar = c(5, 5, 1, 5))
