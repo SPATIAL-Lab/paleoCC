@@ -73,7 +73,7 @@ plot.case = function(case, base, casename){
        xlab = "", ylab = "")
   lines(base$Time - 20000, base$PCO2)
   axis(4)
-  mtext(expression("pCO"[2]*" (ppmv)"), 4, 3)
+  mtext(expression("pCO"[2]*" (x preindustrial)"), 4, 3)
   plot(case$Time - 20000, case$BioC * 12e3, type = "l", lwd = 3, axes = FALSE, 
        xlab = "", ylab = "")
   lines(base$Time - 20000, base$BioC * 12e3)

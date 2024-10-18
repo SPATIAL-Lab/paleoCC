@@ -220,7 +220,7 @@ void initial(Vec_IO_DP& y)
     y[7] = -4.7;               //d13C atm
     y[8] = 4.0;                //d13C surf
     y[9] = 3.1;               //d13C deep
-    initbio = y[10] = 0.227;               //bio C
+    initbio = y[10] = 0.226828;               //bio C
     y[11] = -28.1;              //bio d13C
 
     initsco3 = 0.200;
@@ -390,8 +390,7 @@ void update(Vec_I_DP& y, const double time) //update dependant variables
     rivcal = cwz * y[0];
     rivsil = swz * pow(y[0], 0.3);
     po4riv = pwz * pow(y[0], 0.3);
-    if (fb_ow) rivorg = owz * hydro;  //scale to hydro
-    else rivorg = owz;
+    rivorg = owz * hydro;  //scale to hydro
 
     alkriv = (2 * (rivcal + rivsil));
     sigcriv = rivcal;
@@ -426,7 +425,7 @@ void injection(const double time)
         inject = 0;
     }
 
-    if (time > 20000.0) {
+    if (time > 20000.0 && fb_ow == 1) {
         if (time < 120000.0) hydro = 1.0 + 2.0 * (120000.0 - time) / 100000.0;
         else hydro = 1.0;
     }
@@ -521,9 +520,11 @@ void biology(const double pco2, const double bioC)
     if (fb_oc) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
     else resp = bioC * 0.0634;
 
+    if (fb_ow == 2) hydro = 1 + 2 * (0.226828 - bioC);
+
     if (fb_fpoc) fpoc = 8.5e-6 * hydro;
     else fpoc = 8.5e-6;
-
+    
     cpoc = 6.9e-6 * pow(bioC / 0.1537, 1.1);
     doc = 1.76e-5 * pow(bioC / 0.1537, 1.1);
     eros = fpoc + cpoc + doc;
