@@ -126,3 +126,42 @@ ps1k = sim(list(inj = 1,
                  casename = "ps1k"))
 
 plot.case(ps1k, base1k, "ps1k")
+
+
+## Feedbacks and rate-limited assim recovery for 5 kyr injection
+psasim5k = sim(list(inj = 1,
+                 fb_bio = 2,
+                 fb_oc = 1,
+                 fb_fpoc = 0,
+                 fb_ow = 2,
+                 duration = 5000.0,
+                 injmass = 0.3,
+                 assfb = 1.0e4,
+                 casename = "psasim5k"))
+
+plot.case(psasim5k, base5k, "psasim5k")
+
+## Feedbacks and rate-limited assim recovery for 5 kyr injection
+## Baseline for 5 kyr injection
+base5k = sim(list(inj = 1,
+                  fb_bio = 0,
+                  fb_oc = 0,
+                  fb_fpoc = 0,
+                  fb_ow = 0,
+                  duration = 5000.0,
+                  injmass = 0.19,
+                  assfb = 2.0e4,
+                  casename = "base5k"))
+
+## Scaled for 3 per mil
+psasimscaled5k = sim(list(inj = 1,
+                    fb_bio = 2,
+                    fb_oc = 1,
+                    fb_fpoc = 0,
+                    fb_ow = 2,
+                    duration = 5000.0,
+                    injmass = 0.19,
+                    assfb = 1.0e4,
+                    casename = "psasimscaled5k"))
+
+plot.case(psasimscaled5k, base5k, "psasimscaled5k")

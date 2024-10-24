@@ -21,7 +21,7 @@ ifstream fin;
 double sfres[sfcells][4];
 
 double sco3, dco3, initsco3, initdco3, spco2, dpco2, etimesa, sigcriv, calburial, caldiss,
-alkriv, fracsa, c13diss, rivcal, rivsil, rivorg, lyso, exprod, shelfc, assim, resp, eros,
+alkriv, fracsa, c13diss, rivcal, rivsil, rivorg, lyso, exprod, shelfc, resp, eros,
 fpoc, cpoc, doc, biofrac, shelfdiss, shelfdiss13C, hydro, po4riv, initCO2, initbio;
 double atmco2 = 0.0495;             //10^18 mol
 double vdeep = 1.23;               //10^18 m^3
@@ -39,6 +39,7 @@ double cpratio = 0.104;            //redfield c/p ratio / 1000
 double fracorg = 24.0;
 double fraccal = 0.0;
 double fpocburial = 0.4;     //0.4...0.45,0.2, 0.4
+double assim = 0.014427;
 double Q10 = 1.5;
 
 double cwz = 1.2e-5 / 1.75;          //1.2...1.05,1.5,1.2
@@ -437,36 +438,6 @@ void warm(const double time, const double pco2)
  	double sens = 5.0;
     swtemp = 290 + log(pco2 / initCO2) / log(2) * sens;
     dwtemp = 281 + log(pco2 / initCO2) / log(2) * sens;
-                                                         
-                                                         //Perscribed temperature change for surface and deep ocean
-    /*
-
-    double a = 20000;
-    double b = 30000;
-    double c = 15000;
-
-    double ab = a + b;
-    double abc = a + b + c;
-
-    if (time > 20000.0)
-    {
-        if (time - tw < a)
-        {
-            swtemp = 290 + 5 * (time - tw) / a;
-            dwtemp = 281 + 5 * (time - tw) / a;
-        }
-        else if (time - tw > ab && time - tw < abc)
-        {
-            swtemp = 295 - 5 * (time - tw - ab) / c;
-            dwtemp = 286 - 5 * (time - tw - ab) / c;
-        }
-        else if (time - tw > abc)
-        {
-            swtemp = 290;
-            dwtemp = 281;
-        }
-    }
-    */
 
     //marine org carbon respiration as Q10 function
     if (fb_oc)
@@ -515,7 +486,8 @@ void fractionation()
 //---------------------------------------------------------------------------
 void biology(const double pco2, const double bioC)
 {
-    if (fb_bio) assim = 0.014427 * exp(-inject * assfb);      // Negative productivity feedback
+    if (fb_bio == 1) assim = 0.014427 * exp(-inject * assfb);      // Negative productivity feedback
+    else if (fb_bio == 2) assim = min(0.014427 * exp(-inject * assfb), assim * 1.000003);
     else assim = 0.014427;
     if (fb_oc) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
     else resp = bioC * 0.0634;
