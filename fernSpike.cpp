@@ -104,7 +104,7 @@ int main(int argc, char** argv)
     double eps = 1.0e-4;
     int nok, nbad;
     xp_p = new Vec_DP(finish / dxsav + 1);
-    yp_p = new Mat_DP(nrow + 13, finish / dxsav + 1);
+    yp_p = new Mat_DP(nrow + 15, finish / dxsav + 1);
     kmax = finish / dxsav + 1;
     Vec_DP& xp = *xp_p;
     Mat_DP& yp = *yp_p;
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
         << "\tPO4Surf\tPO4Deep\td13CAtm\td13CSurf\t"
         << "d13CDeep\tBioC\td13CBio\tInject\tStemp\tDtemp\tExport\t"
         << "Lysocline\tCalBurial\tDissolution\tc13Diss\tOrgBurial\tPO4Burial"
-        << "\tsCO3--Change\tdCO3--Change\tSAFrac\n";
+        << "\tsCO3--Change\tdCO3--Change\tSAFrac\tAssim\tResp\n";
     for (int i = 0; kount - i; i++) {
         fout << xp[i] << "\t";
         for (int j = 0; nvars - j; j++) fout << yp[j][i] << "\t";
@@ -435,7 +435,7 @@ void injection(const double time)
 void warm(const double time, const double pco2)
 {
     //temperature as function of CO2 concentration and sensitivity
- 	double sens = 5.0;
+ 	double sens = 6.0;
     swtemp = 290 + log(pco2 / initCO2) / log(2) * sens;
     dwtemp = 281 + log(pco2 / initCO2) / log(2) * sens;
 
@@ -486,8 +486,17 @@ void fractionation()
 //---------------------------------------------------------------------------
 void biology(const double pco2, const double bioC)
 {
-    if (fb_bio == 1) assim = 0.014427 * exp(-inject * assfb);      // Negative productivity feedback
-    else if (fb_bio == 2) assim = min(0.014427 * exp(-inject * assfb), assim * 1.000003);
+    if (fb_bio == 1 && swtemp >= 292.0) {
+        assim = 0.014427 / pow((swtemp - 291.0), assfb);      // Negative productivity feedback
+    }
+    else if (fb_bio == 2) {
+        if (swtemp >= 292.0) {
+            assim = min(0.014427 / pow((swtemp - 291.0), assfb), assim * 1.000003);
+        }
+        else {
+            assim = min(0.014427, assim * 1.000003);
+        }
+    }
     else assim = 0.014427;
     if (fb_oc) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
     else resp = bioC * 0.0634;
