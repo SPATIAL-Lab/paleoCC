@@ -180,14 +180,14 @@ base5k = sim(list(inj = 1,
                   casename = "base5k"))
 
 ## Scaled for 3 per mil
-psasimscaled5k = sim(list(inj = 1,
-                          fb_bio = 2,
-                          fb_oc = 1,
-                          fb_fpoc = 0,
-                          fb_ow = 2,
-                          duration = 5000.0,
-                          injmass = 0.15,
-                          assfb = 0.3,
-                          casename = "tscaled5k"))
+tfb = sim(list(inj = 1,
+                  fb_bio = 2,
+                  fb_oc = 1,
+                  fb_fpoc = 0,
+                  fb_ow = 2,
+                  duration = 5000.0,
+                  injmass = 0.15,
+                  assfb = 0.5,
+                  casename = "tscaled5k"))
 
-plot.case(psasimscaled5k, base5k, "tscaled5k")
+plot.case(tfb, base5k, "tscaled5k")

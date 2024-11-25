@@ -162,7 +162,7 @@ int main(int argc, char** argv)
     for (int i = 0; kount - i; i++) {
         fout << xp[i] << "\t";
         for (int j = 0; nvars - j; j++) fout << yp[j][i] << "\t";
-        for (int j = nrow; j - (nrow + 13); j++) fout << yp[j][i] << "\t";
+        for (int j = nrow; j - (nrow + 15); j++) fout << yp[j][i] << "\t";
         fout << "\n";
     }
     fout << "number of steps\t" << nok << "\n";
@@ -486,12 +486,23 @@ void fractionation()
 //---------------------------------------------------------------------------
 void biology(const double pco2, const double bioC)
 {
-    if (fb_bio == 1 && swtemp >= 292.0) {
-        assim = 0.014427 / pow((swtemp - 291.0), assfb);      // Negative productivity feedback
+    if (fb_bio == 1) {
+        if (swtemp >= 292.0 && swtemp <= 294.0) {
+            assim = 0.014427 * (1 - (sin(((swtemp - 292.0) - 1.0) / 2.0 * 3.14159265) + 1.0) * assfb / 2.0);      // Negative productivity feedback
+        }
+        else if (swtemp > 294.0) {
+            assim = 0.014427 * (1 - assfb);
+        }
+        else {
+            assim = 0.014427;
+        }
     }
     else if (fb_bio == 2) {
-        if (swtemp >= 292.0) {
-            assim = min(0.014427 / pow((swtemp - 291.0), assfb), assim * 1.000003);
+        if (swtemp >= 292.0 && swtemp <= 294.0) {
+            assim = min(0.014427 * (1 - (sin(((swtemp - 292.0) - 1.0) / 2.0 * 3.14159265) + 1.0) * assfb / 2.0), assim * 1.000003);
+        }
+        else if (swtemp > 294.0) {
+            assim = 0.014427 * (1 - assfb);
         }
         else {
             assim = min(0.014427, assim * 1.000003);
