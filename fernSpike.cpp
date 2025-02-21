@@ -487,7 +487,7 @@ void fractionation()
 void biology(const double pco2, const double bioC)
 {
     if (fb_bio == 1) {
-        assim = max(0.014427 * 0.5, 0.014427 * (1 - pow(inject / (injmass / duration), 2) * assfb));      // Negative productivity feedback
+        assim = min(max(0.014427 * 0.5, 0.014427 * (1 - pow(inject / (injmass / duration), 2) * assfb)), assim * 1.0001);      // Productivity feedback
     }
     else if (fb_bio == 2) {
         if (swtemp >= 292.0 && swtemp <= 294.0) {
