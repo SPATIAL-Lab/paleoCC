@@ -191,3 +191,28 @@ tfb = sim(list(inj = 1,
                   casename = "tscaled5k"))
 
 plot.case(tfb, base5k, "tscaled5k")
+
+
+## 3 kyr baseline
+b3k = sim(list(inj = 1,
+               fb_bio = 0,
+               fb_oc = 0,
+               fb_fpoc = 0,
+               fb_ow = 0,
+               duration = 3000.0,
+               injmass = 0.15,
+               assfb = 0.5,
+               casename = "base3k"))
+
+## 3 kyr feedback
+f3k = sim(list(inj = 1,
+               fb_bio = 1,
+               fb_oc = 1,
+               fb_fpoc = 0,
+               fb_ow = 1,
+               duration = 3000.0,
+               injmass = 0.15,
+               assfb = 0.5,
+               casename = "fb3k"))
+
+plot.case(f3k, b3k, "fb3k")
