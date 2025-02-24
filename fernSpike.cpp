@@ -104,7 +104,7 @@ int main(int argc, char** argv)
     double eps = 1.0e-4;
     int nok, nbad;
     xp_p = new Vec_DP(finish / dxsav + 1);
-    yp_p = new Mat_DP(nrow + 15, finish / dxsav + 1);
+    yp_p = new Mat_DP(nrow + 16, finish / dxsav + 1);
     kmax = finish / dxsav + 1;
     Vec_DP& xp = *xp_p;
     Mat_DP& yp = *yp_p;
@@ -158,11 +158,11 @@ int main(int argc, char** argv)
         << "\tPO4Surf\tPO4Deep\td13CAtm\td13CSurf\t"
         << "d13CDeep\tBioC\td13CBio\tInject\tStemp\tDtemp\tExport\t"
         << "Lysocline\tCalBurial\tDissolution\tc13Diss\tOrgBurial\tPO4Burial"
-        << "\tsCO3--Change\tdCO3--Change\tSAFrac\tAssim\tResp\n";
+        << "\tsCO3--Change\tdCO3--Change\tSAFrac\tAssim\tResp\tEros\n";
     for (int i = 0; kount - i; i++) {
         fout << xp[i] << "\t";
         for (int j = 0; nvars - j; j++) fout << yp[j][i] << "\t";
-        for (int j = nrow; j - (nrow + 15); j++) fout << yp[j][i] << "\t";
+        for (int j = nrow; j - (nrow + 16); j++) fout << yp[j][i] << "\t";
         fout << "\n";
     }
     fout << "number of steps\t" << nok << "\n";

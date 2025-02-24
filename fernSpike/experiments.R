@@ -212,7 +212,7 @@ f3k = sim(list(inj = 1,
                fb_ow = 1,
                duration = 3000.0,
                injmass = 0.15,
-               assfb = 0.5,
+               assfb = 0.4,
                casename = "fb3k"))
 
 plot.case(f3k, b3k, "fb3k")

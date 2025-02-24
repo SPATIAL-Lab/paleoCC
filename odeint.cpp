@@ -8,7 +8,7 @@ extern Vec_DP *xp_p;
 extern Mat_DP *yp_p;
 extern double exprod, lyso, calburial, ioratio, caldiss, c13diss, ioratio,
 		orgburial, cpratio, swtemp, dwtemp, inject, sco3, dco3, initsco3, initdco3, fracsa,
-		fpoc, fpocburial, assim, resp;
+		fpoc, fpocburial, assim, resp, eros;
 
 void NR::odeint(Vec_IO_DP &ystart, const DP x1, const DP x2, const DP eps,
 	const DP h1, const DP hmin, int &nok, int &nbad,
@@ -51,6 +51,7 @@ void NR::odeint(Vec_IO_DP &ystart, const DP x1, const DP x2, const DP eps,
                         yp[nvar+12][kount] = fracsa;
 						yp[nvar + 13][kount] = assim;
 						yp[nvar + 14][kount] = resp;
+						yp[nvar + 15][kount] = eros;
        			xp[kount++]=x;
 			xsav=x;
                         cout << x << "\n";
