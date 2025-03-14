@@ -487,7 +487,7 @@ void fractionation()
 void biology(const double pco2, const double bioC)
 {
     if (fb_bio == 1) {
-        assim = min(max(0.014427 * 0.5, 0.014427 * (1 - pow(inject / (injmass / duration), 2) * assfb)), assim * 1.0001);      // Productivity feedback
+        assim = min(max(0.014427 * 0.5, 0.014427 * (1 - pow(inject / (injmass / duration), 2) * assfb)), assim * 1.000003);      // Productivity feedback
     }
     else if (fb_bio == 2) {
         if (swtemp >= 292.0 && swtemp <= 294.0) {
@@ -504,7 +504,11 @@ void biology(const double pco2, const double bioC)
     if (fb_oc) resp = bioC * 0.0634 * pow(Q10, (swtemp - 290.0) / 10.0);   
     else resp = bioC * 0.0634;
 
-    if (fb_ow == 2) hydro = 1 + 2 * (0.226828 - bioC);
+//   if (fb_ow == 2) hydro = 1 * pow(bioC / 0.226828, -2);
+    if (fb_ow == 2) {
+        double bf = (bioC / 0.226828 - 0.7) / (1.0 - 0.7);
+        hydro = 4 - (copysign(pow(abs(bf), 1 / 3), (bf)) + 2);
+    }
 
     if (fb_fpoc) fpoc = 8.5e-6 * hydro;
     else fpoc = 8.5e-6;

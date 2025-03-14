@@ -200,7 +200,7 @@ b3k = sim(list(inj = 1,
                fb_fpoc = 0,
                fb_ow = 0,
                duration = 3000.0,
-               injmass = 0.15,
+               injmass = 0.242,
                assfb = 0.5,
                casename = "base3k"))
 
@@ -209,10 +209,14 @@ f3k = sim(list(inj = 1,
                fb_bio = 1,
                fb_oc = 1,
                fb_fpoc = 0,
-               fb_ow = 1,
+               fb_ow = 2,
                duration = 3000.0,
-               injmass = 0.15,
-               assfb = 0.4,
+               injmass = 0.242,
+               assfb = 0.5,
                casename = "fb3k"))
 
 plot.case(f3k, b3k, "fb3k")
+
+write.csv(b3k, "fernSpike/control.csv")
+write.csv(f3k, "fernSpike/feedbacks.csv")
+
