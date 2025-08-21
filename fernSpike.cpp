@@ -67,6 +67,7 @@ int fb_ow;  // kerogen weathering
 double duration;  // injection duration, kyr
 double injmass;  // total injection mass, 10^18 mol C
 double assfb;  // assimilation feedback strength
+double rlim;  // lower limit on assimilation rate
 string casename;  // for output directory
 
 Vec_DP* xp_p;
@@ -208,6 +209,7 @@ void initial(Vec_IO_DP& y)
     fin >> duration;
     fin >> injmass;
     fin >> assfb;
+    fin >> rlim;
     fin >> casename;
     fin.close();
 
@@ -487,17 +489,17 @@ void fractionation()
 void biology(const double pco2, const double bioC)
 {
     if (fb_bio == 1) {
-        assim = min(max(0.014427 * 0.5, 0.014427 * (1 - pow(inject / (injmass / duration), 2) * assfb)), assim * 1.000003);      // Productivity feedback
+        assim = min(max(0.014427 * 0.5, 0.014427 * (1 - pow(inject / (injmass / duration), 2) * assfb)), assim * rlim);      // Productivity feedback
     }
     else if (fb_bio == 2) {
         if (swtemp >= 292.0 && swtemp <= 294.0) {
-            assim = min(0.014427 * (1 - (sin(((swtemp - 292.0) - 1.0) / 2.0 * 3.14159265) + 1.0) * assfb / 2.0), assim * 1.000003);
+            assim = min(0.014427 * (1 - (sin(((swtemp - 292.0) - 1.0) / 2.0 * 3.14159265) + 1.0) * assfb / 2.0), assim * rlim);
         }
         else if (swtemp > 294.0) {
             assim = 0.014427 * (1 - assfb);
         }
         else {
-            assim = min(0.014427, assim * 1.000003);
+            assim = min(0.014427, assim * rlim);
         }
     }
     else assim = 0.014427;
@@ -507,7 +509,7 @@ void biology(const double pco2, const double bioC)
 //   if (fb_ow == 2) hydro = 1 * pow(bioC / 0.226828, -2);
     if (fb_ow == 2) {
         double bf = (bioC / 0.226828 - 0.7) / (1.0 - 0.7);
-        hydro = 4 - (copysign(pow(abs(bf), 1 / 3), (bf)) + 2);
+        hydro = 2 - (copysign(pow(abs(bf), 1 / 3), (bf)));
     }
 
     if (fb_fpoc) fpoc = 8.5e-6 * hydro;

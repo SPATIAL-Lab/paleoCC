@@ -1,198 +1,5 @@
 source("fernSpike/helpers.R")
 
-# 1 kyr injection
-## Baseline for 1 kyr injection
-base1k = sim(list(inj = 1,
-                  fb_bio = 0,
-                  fb_oc = 0,
-                  fb_fpoc = 0,
-                  fb_ow = 0,
-                  duration = 1000.0,
-                  injmass = 0.3,
-                  assfb = 2.0e4,
-                  casename = "base1k"))
-
-## Feedbacks for 1 kyr injection
-fb1k = sim(list(inj = 1,
-                  fb_bio = 1,
-                  fb_oc = 1,
-                  fb_fpoc = 0,
-                  fb_ow = 1,
-                  duration = 1000.0,
-                  injmass = 0.3,
-                  assfb = 2.0e4,
-                  casename = "fb1k"))
-
-plot.case(fb1k, base1k, "fb1k")
-
-## Scaled feedbacks for 1 kyr injection
-sfb1k = sim(list(inj = 1,
-                fb_bio = 1,
-                fb_oc = 1,
-                fb_fpoc = 0,
-                fb_ow = 1,
-                duration = 1000.0,
-                injmass = 0.3,
-                assfb = 2.0e3,
-                casename = "sfb1k"))
-
-plot.case(sfb1k, base1k, "sfb1k")
-
-# 
-## Baseline for 5 kyr injection
-base5k = sim(list(inj = 1,
-                  fb_bio = 0,
-                  fb_oc = 0,
-                  fb_fpoc = 0,
-                  fb_ow = 0,
-                  duration = 5000.0,
-                  injmass = 0.3,
-                  assfb = 2.0e4,
-                  casename = "base5k"))
-
-## Feedbacks for 5 kyr injection
-fb5k = sim(list(inj = 1,
-                fb_bio = 1,
-                fb_oc = 1,
-                fb_fpoc = 0,
-                fb_ow = 1,
-                duration = 5000.0,
-                injmass = 0.3,
-                assfb = 2.0e4,
-                casename = "fb5k"))
-
-plot.case(fb5k, base5k, "fb5k")
-
-## Scaled feedbacks for 5 kyr injection
-sfb5k = sim(list(inj = 1,
-                 fb_bio = 1,
-                 fb_oc = 1,
-                 fb_fpoc = 0,
-                 fb_ow = 1,
-                 duration = 5000.0,
-                 injmass = 0.3,
-                 assfb = 1.0e4,
-                 casename = "sfb5k"))
-
-plot.case(sfb5k, base5k, "sfb5k")
-
-# 10 kyr injection
-## Baseline for 10 kyr injection
-base10k = sim(list(inj = 1,
-                  fb_bio = 0,
-                  fb_oc = 0,
-                  fb_fpoc = 0,
-                  fb_ow = 0,
-                  duration = 10000.0,
-                  injmass = 0.3,
-                  assfb = 2.0e4,
-                  casename = "base1k"))
-
-## Feedbacks for 10 kyr injection
-fb10k = sim(list(inj = 1,
-                fb_bio = 1,
-                fb_oc = 1,
-                fb_fpoc = 0,
-                fb_ow = 1,
-                duration = 10000.0,
-                injmass = 0.3,
-                assfb = 2.0e4,
-                casename = "fb1k"))
-
-plot.case(fb10k, base10k, "fb10k")
-
-# 10 kyr injection w/ plant stabilization
-ps10k = sim(list(inj = 1,
-                 fb_bio = 1,
-                 fb_oc = 1,
-                 fb_fpoc = 0,
-                 fb_ow = 2,
-                 duration = 10000.0,
-                 injmass = 0.3,
-                 assfb = 2.0e4,
-                 casename = "ps1k"))
-
-plot.case(ps10k, base10k, "ps10k")
-
-# 1 kyr injection w/ plant stabilization
-ps1k = sim(list(inj = 1,
-                 fb_bio = 1,
-                 fb_oc = 1,
-                 fb_fpoc = 0,
-                 fb_ow = 2,
-                 duration = 1000.0,
-                 injmass = 0.3,
-                 assfb = 2.0e4,
-                 casename = "ps1k"))
-
-plot.case(ps1k, base1k, "ps1k")
-
-
-## Feedbacks and rate-limited assim recovery for 5 kyr injection
-psasim5k = sim(list(inj = 1,
-                 fb_bio = 2,
-                 fb_oc = 1,
-                 fb_fpoc = 0,
-                 fb_ow = 2,
-                 duration = 5000.0,
-                 injmass = 0.3,
-                 assfb = 1.0e4,
-                 casename = "psasim5k"))
-
-plot.case(psasim5k, base5k, "psasim5k")
-
-## Feedbacks and rate-limited assim recovery for 5 kyr injection
-## Baseline for 5 kyr injection
-base5k = sim(list(inj = 1,
-                  fb_bio = 0,
-                  fb_oc = 0,
-                  fb_fpoc = 0,
-                  fb_ow = 0,
-                  duration = 5000.0,
-                  injmass = 0.19,
-                  assfb = 2.0e4,
-                  casename = "base5k"))
-
-## Scaled for 3 per mil
-psasimscaled5k = sim(list(inj = 1,
-                    fb_bio = 2,
-                    fb_oc = 1,
-                    fb_fpoc = 0,
-                    fb_ow = 2,
-                    duration = 5000.0,
-                    injmass = 0.19,
-                    assfb = 1.0e4,
-                    casename = "psasimscaled5k"))
-
-plot.case(psasimscaled5k, base5k, "psasimscaled5k")
-
-
-## New T-driven feedback
-## Baseline for 5 kyr injection
-base5k = sim(list(inj = 1,
-                  fb_bio = 0,
-                  fb_oc = 0,
-                  fb_fpoc = 0,
-                  fb_ow = 0,
-                  duration = 5000.0,
-                  injmass = 0.19,
-                  assfb = 2.0e4,
-                  casename = "base5k"))
-
-## Scaled for 3 per mil
-tfb = sim(list(inj = 1,
-                  fb_bio = 2,
-                  fb_oc = 1,
-                  fb_fpoc = 0,
-                  fb_ow = 2,
-                  duration = 5000.0,
-                  injmass = 0.15,
-                  assfb = 0.5,
-                  casename = "tscaled5k"))
-
-plot.case(tfb, base5k, "tscaled5k")
-
-
 ## 3 kyr baseline
 b3k = sim(list(inj = 1,
                fb_bio = 0,
@@ -202,6 +9,7 @@ b3k = sim(list(inj = 1,
                duration = 3000.0,
                injmass = 0.242,
                assfb = 0.5,
+               rlim = 1.000003,
                casename = "base3k"))
 
 ## 3 kyr feedback
@@ -213,6 +21,7 @@ f3k = sim(list(inj = 1,
                duration = 3000.0,
                injmass = 0.242,
                assfb = 0.5,
+               rlim = 1.000003,
                casename = "fb3k"))
 
 plot.case(f3k, b3k, "fb3k")
@@ -220,3 +29,54 @@ plot.case(f3k, b3k, "fb3k")
 write.csv(b3k, "fernSpike/control.csv")
 write.csv(f3k, "fernSpike/feedbacks.csv")
 
+## Sensitivity tests - assfb
+f3k.weak = sim(list(inj = 1,
+               fb_bio = 1,
+               fb_oc = 1,
+               fb_fpoc = 0,
+               fb_ow = 2,
+               duration = 3000.0,
+               injmass = 0.242,
+               assfb = 0.3,
+               rlim = 1.000003,
+               casename = "weak3k"))
+
+f3k.strong = sim(list(inj = 1,
+               fb_bio = 1,
+               fb_oc = 1,
+               fb_fpoc = 0,
+               fb_ow = 2,
+               duration = 3000.0,
+               injmass = 0.242,
+               assfb = 0.7,
+               rlim = 1.000003,
+               casename = "strong3k"))
+
+write.csv(f3k.weak, "fernSpike/weak.csv")
+write.csv(f3k.strong, "fernSpike/strong.csv")
+
+## Sensitivity tests - recovery
+f3k.fast = sim(list(inj = 1,
+                    fb_bio = 1,
+                    fb_oc = 1,
+                    fb_fpoc = 0,
+                    fb_ow = 2,
+                    duration = 3000.0,
+                    injmass = 0.242,
+                    assfb = 0.3,
+                    rlim = 1.00001,
+                    casename = "fast3k"))
+
+f3k.slow = sim(list(inj = 1,
+                      fb_bio = 1,
+                      fb_oc = 1,
+                      fb_fpoc = 0,
+                      fb_ow = 2,
+                      duration = 3000.0,
+                      injmass = 0.242,
+                      assfb = 0.7,
+                      rlim = 1.000001,
+                      casename = "slow3k"))
+
+write.csv(f3k.fast, "fernSpike/fast.csv")
+write.csv(f3k.slow, "fernSpike/slow.csv")

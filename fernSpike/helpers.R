@@ -7,6 +7,7 @@ write.config = function(parms){
                parms$duration, "\n",
                parms$injmass, "\n",
                parms$assfb, "\n",
+               parms$rlim, "\n",
                parms$casename, "\n") 
   write(str, "config.txt")
 }
@@ -26,6 +27,8 @@ read.data = function(parms){
   for(i in 1:3){
     d[, i] = as.numeric(d[, i])
   }
+  # Add kerogen weathering flux
+  d$Kerogen = 2.882e-6 * (2 - (((d$BioC / 0.226828 - 0.7) / 0.3) ^ (1 / 3)))
   return(d)
 }
 
@@ -37,8 +40,6 @@ sim = function(parms){
 }
 
 plot.case = function(case, base, casename){
-  fname = paste0(casename, "_d13C.png")
-  png(file.path("fernSpike", "figs", fname), width = 6, height = 8, units = "in", res = 600)
   layout(matrix(1:3, nrow = 3))
   par(mar = c(5, 5, 1, 5))
   plot(case$Time - 20000, case$d13CAtm, type = "l", lwd = 3, axes = FALSE, 
@@ -58,10 +59,7 @@ plot.case = function(case, base, casename){
   axis(1)
   mtext("Time (kyr)", 1, 3)
   mtext(expression(delta^{13}*"C"[deep]), 2, 3)
-  dev.off()
-  
-  fname = paste0(casename, "_CC.png")
-  png(file.path("fernSpike", "figs", fname), width = 6, height = 8, units = "in", res = 600)
+
   layout(matrix(1:3, nrow = 3))
   par(mar = c(5, 5, 1, 5))
   plot(case$Time - 20000, case$Inject * 12e3, type = "l", lwd = 3, axes = FALSE, 
@@ -81,7 +79,6 @@ plot.case = function(case, base, casename){
   axis(1)
   mtext("Time (kyr)", 1, 3)
   mtext("Terrestrial biosphere (Pg)", 2, 3)
-  dev.off()
 }
 
 
