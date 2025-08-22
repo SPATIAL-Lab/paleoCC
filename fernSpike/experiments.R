@@ -66,7 +66,7 @@ f3k.fast = sim(list(inj = 1,
                     fb_ow = 2,
                     duration = 3000.0,
                     injmass = 0.242,
-                    assfb = 0.3,
+                    assfb = 0.5,
                     rlim = 1.00001,
                     casename = "fast3k"))
 
@@ -77,7 +77,7 @@ f3k.slow = sim(list(inj = 1,
                       fb_ow = 2,
                       duration = 3000.0,
                       injmass = 0.242,
-                      assfb = 0.7,
+                      assfb = 0.5,
                       rlim = 1.000001,
                       casename = "slow3k"))
 
