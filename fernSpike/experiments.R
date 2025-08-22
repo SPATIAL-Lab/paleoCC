@@ -55,6 +55,9 @@ f3k.strong = sim(list(inj = 1,
 write.csv(f3k.weak, "fernSpike/weak.csv")
 write.csv(f3k.strong, "fernSpike/strong.csv")
 
+plot.case(f3k.strong, f3k, "strong")
+plot.case(f3k.weak, f3k, "weak")
+
 ## Sensitivity tests - recovery
 f3k.fast = sim(list(inj = 1,
                     fb_bio = 1,
@@ -80,3 +83,6 @@ f3k.slow = sim(list(inj = 1,
 
 write.csv(f3k.fast, "fernSpike/fast.csv")
 write.csv(f3k.slow, "fernSpike/slow.csv")
+
+plot.case(f3k.fast, f3k, "fast")
+plot.case(f3k.slow, f3k, "slow")
