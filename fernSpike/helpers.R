@@ -28,7 +28,8 @@ read.data = function(parms){
     d[, i] = as.numeric(d[, i])
   }
   # Add kerogen weathering flux
-  d$Kerogen = 2.882e-6 * (2 - (((d$BioC / 0.226828 - 0.7) / 0.3) ^ (1 / 3)))
+  bf = (d$BioC / 0.226828 - 0.7) / 0.3
+  d$Kerogen = 2.882e-6 * (2 - (abs(bf) ^ (1 / 3)) * bf / abs(bf))
   return(d)
 }
 
